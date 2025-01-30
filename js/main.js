@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     
     const deleteSelectedButton = document.createElement("button");
-    deleteSelectedButton.textContent = "delete";
+    deleteSelectedButton.textContent = "delete guitar";
     deleteSelectedButton.classList.add("delete-button");
     deleteSelectedButton.onclick = removeSelectedGuitars;
     document.querySelector(".right-side").appendChild(deleteSelectedButton);
