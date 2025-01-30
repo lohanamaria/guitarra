@@ -1,4 +1,4 @@
-import { openDB } from "idb";
+import { openDB } from "idb"; 
 
 let database;
 
@@ -8,17 +8,17 @@ async function initializeDB() {
             upgrade(db) {
                 if (!db.objectStoreNames.contains('guitarCollection')) {
                     const store = db.createObjectStore('guitarCollection', {
-                        keyPath: 'model',
+                        keyPath: 'id',
                         autoIncrement: true
                     });
-                    store.createIndex('id', 'id');
+                    store.createIndex('model', 'model', { unique: false });
                     console.log("Fire on!! working database!");
                 }
             }
         });
         console.log("open guitar database.");
     } catch (e) {
-        console.error("failed newba error creating the database:", e.message);
+        console.error("failed error creating the database:", e.message);
     }
 }
 
@@ -26,16 +26,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     await initializeDB();
 
     const addGuitarButton = document.getElementById("addGuitar");
-    const guitarInput = document.getElementById("guitarInput");
-    const guitarList = document.getElementById("guitarList");
-
     if (addGuitarButton) {
         addGuitarButton.addEventListener("click", addGuitar);
     }
 
-    if (guitarInput && guitarList) {
-        loadGuitars();
-    }
+    loadGuitars();
 });
 
 async function loadGuitars() {
@@ -55,7 +50,18 @@ async function loadGuitars() {
         if (guitars.length > 0) {
             guitars.forEach(guitar => {
                 const listItem = document.createElement("li");
-                listItem.textContent = guitar.model;
+                
+                // Exibir imagem
+                if (guitar.foto) {
+                    const img = document.createElement("img");
+                    img.src = guitar.foto;
+                    img.style.width = "100px";
+                    img.style.height = "75px";
+                    img.style.marginRight = "10px";
+                    listItem.appendChild(img);
+                }
+
+                listItem.appendChild(document.createTextNode(guitar.model));
 
                 const deleteButton = document.createElement("button");
                 deleteButton.textContent = "del";
@@ -75,18 +81,19 @@ async function loadGuitars() {
 
 async function addGuitar() {
     const guitarInput = document.getElementById("guitarInput");
-    
-    let foto = localStorage.getItem("image");
-
-
+    let foto = localStorage.getItem("image"); 
     let model = guitarInput.value.trim();
-    
+
+    if (!model) {
+        console.error("Guitar model cannot be empty.");
+        return;
+    }
 
     if (!database) {
         console.error("database not loaded srry");
         return;
     }
-    console.log(foto)
+
     try { 
         const tx = database.transaction('guitarCollection', 'readwrite');
         const store = tx.objectStore('guitarCollection');
@@ -95,13 +102,13 @@ async function addGuitar() {
         guitarInput.value = "";
         loadGuitars();
     } catch (error) {
-        console.error('error adding ur guitar:', error);
+        console.error('error adding guitar:', error);
     }
 }
 
 async function removeGuitar(id) {
     if (!database) {
-        console.error("error adding ur guitar:");
+        console.error("database not loaded.");
         return;
     }
 
@@ -110,9 +117,9 @@ async function removeGuitar(id) {
         const store = tx.objectStore('guitarCollection');
         await store.delete(id);
         await tx.done; 
-        console.log('your guitar removed successfully. why');
+        console.log('Guitar removed successfully.');
         loadGuitars();
     } catch (error) {
-        console.error('error removing ur guitar:', error);
+        console.error('error removing guitar:', error);
     }
 }
