@@ -69,6 +69,7 @@ async function loadGuitars() {
     }
 }
 
+
 async function addGuitar() {
     const guitarInput = document.getElementById("guitarInput");
     if (!guitarInput) return;
@@ -105,7 +106,7 @@ async function removeGuitar(id) {
     try {
         await store.delete(id);
         console.log('your guitar removed successfully. why');
-        loadGuitars();
+        loadGuitars();  
     } catch (error) {
         console.error('error removing ur guitar:', error);
     }
