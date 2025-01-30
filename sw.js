@@ -5,13 +5,13 @@ import { CacheableResponsePlugin } from 'workbox-cacheable-response';
 import { ExpirationPlugin } from 'workbox-expiration';
 
 const pageCache = new CacheFirst({
-    cacheName: 'pwa-cam',
+    cacheName: 'guitarra',
     plugins: [
         new CacheableResponsePlugin({
             statuses: [0, 200],
         }),
         new ExpirationPlugin({
-            maxAgeSeconds: 30 * 24 * 60 * 60, // Expira após 30 dias
+            maxAgeSeconds: 30 * 24 * 60 * 60,
         }),
     ],
 });
