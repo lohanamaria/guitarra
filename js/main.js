@@ -63,22 +63,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function updateGuitarList() {
         if (!guitarList) return;
-
+    
         guitarList.innerHTML = "";
         guitarCollection.forEach((guitar, index) => {
             const li = document.createElement("li");
-            li.textContent = guitar;
-
-            const deleteButton = document.createElement("button");
-            deleteButton.textContent = "delete";
-            deleteButton.style.marginLeft = "100x";
-            deleteButton.onclick = () => removeGuitar(index);
-
-            li.appendChild(deleteButton);
+    
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.classList.add("guitar-checkbox");
+            checkbox.dataset.index = index;
+    
+            const label = document.createElement("span");
+            label.textContent = guitar;
+            label.style.marginLeft = "10px";
+    
+            li.appendChild(checkbox);
+            li.appendChild(label);
             guitarList.appendChild(li);
         });
     }
+    
 
+    function removeSelectedGuitars() {
+        const checkboxes = document.querySelectorAll(".guitar-checkbox:checked");
+        const indicesToRemove = Array.from(checkboxes).map(checkbox => parseInt(checkbox.dataset.index));
+    
+       
+        guitarCollection = guitarCollection.filter((_, index) => !indicesToRemove.includes(index));
+    
+        localStorage.setItem("guitarCollection", JSON.stringify(guitarCollection));
+        updateGuitarList();
+    }
+    
+    const deleteSelectedButton = document.createElement("button");
+    deleteSelectedButton.textContent = "delete";
+    deleteSelectedButton.classList.add("delete-button");
+    deleteSelectedButton.onclick = removeSelectedGuitars;
+    document.querySelector(".right-side").appendChild(deleteSelectedButton);
+    
     function addGuitar() {
         if (!guitarInput) return;
 
