@@ -59,7 +59,10 @@ document.addEventListener("DOMContentLoaded", () => {
         img.style.border = "1px solid #000";
 
         cameraOutputContainer.appendChild(img);
+
+        localStorage.setItem("image", JSON.stringify(img.src));
     }
+
 
     function updateGuitarList() {
         if (!guitarList) return;

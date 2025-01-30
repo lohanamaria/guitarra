@@ -8,10 +8,10 @@ async function initializeDB() {
             upgrade(db) {
                 if (!db.objectStoreNames.contains('guitarCollection')) {
                     const store = db.createObjectStore('guitarCollection', {
-                        keyPath: 'id',
+                        keyPath: 'model',
                         autoIncrement: true
                     });
-                    store.createIndex('model', 'model', { unique: false });
+                    store.createIndex('id', 'id');
                     console.log("Fire on!! working database!");
                 }
             }
@@ -75,22 +75,23 @@ async function loadGuitars() {
 
 async function addGuitar() {
     const guitarInput = document.getElementById("guitarInput");
-    if (!guitarInput) return;
+    
+    let foto = localStorage.getItem("image");
+
 
     let model = guitarInput.value.trim();
-    if (!model) return;
+    
 
     if (!database) {
         console.error("database not loaded srry");
         return;
     }
-
+    console.log(foto)
     try { 
         const tx = database.transaction('guitarCollection', 'readwrite');
         const store = tx.objectStore('guitarCollection');
-        const id = await store.add({ model }); 
+        await store.add({ model, foto }); 
         await tx.done; 
-        console.log('cooool guitar added successfully!! ID:', id);
         guitarInput.value = "";
         loadGuitars();
     } catch (error) {
