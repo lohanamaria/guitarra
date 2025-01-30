@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lista de Guitarras</title>
+    <link rel="stylesheet" href="/CSS/style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="/images/icon-256_ios.png">
+    <link rel="icon" href="/images/camera_256.png" sizes="256x256">
+    <meta name="theme-color" content="white">
+</head>
+<body>
+    <div class="container">
+        <div class="left-side">
+    <h1>Guitarstars: </h1>
+    <input type="text" id="guitarInput" placeholder="Digite o modelo da guitarra">
+    <button id="addGuitar">add your guitar<strong>star</strong></button>
+    <ul id="guitarList"></ul>
+    <div id="camera-output-container"></div>
+    </div>
+    
+    <div class="right-side">
+    <main id="camera">
+        <video id="camera-view" autoplay playsinline style="width: 300px; height: 200px;"></video>
+        <canvas id="camera-sensor" style="display:none;"></canvas>
+        <button id="cameraButton">allow cam</button>
+        <button id="captureButton">take a photo of the guitar</button>
+    </div>
+    </main>
+ 
+</div>
+    <script src="js/main.js"></script>
+</body>
+</html>
