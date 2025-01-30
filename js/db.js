@@ -24,7 +24,7 @@ async function initializeDB() {
 
 document.addEventListener("DOMContentLoaded", async () => {
     await initializeDB();
-    
+
     const addGuitarButton = document.getElementById("addGuitar");
     const guitarInput = document.getElementById("guitarInput");
     const guitarList = document.getElementById("guitarList");
@@ -43,32 +43,35 @@ async function loadGuitars() {
         console.error("database not yet loaded sorry");
         return;
     }
-    const tx = database.transaction('guitarCollection', 'readonly');
-    const store = tx.objectStore('guitarCollection');
-    const guitars = await store.getAll();
-    const guitarList = document.getElementById("guitarList");
-    if (!guitarList) return;
-    
-    guitarList.innerHTML = "";
+    try { 
+        const tx = database.transaction('guitarCollection', 'readonly');
+        const store = tx.objectStore('guitarCollection');
+        const guitars = await store.getAll();
+        const guitarList = document.getElementById("guitarList");
+        if (!guitarList) return;
 
-    if (guitars.length > 0) {
-        guitars.forEach(guitar => {
-            const listItem = document.createElement("li");
-            listItem.textContent = guitar.model;
+        guitarList.innerHTML = "";
 
-            const deleteButton = document.createElement("button");
-            deleteButton.textContent = "del";
-            deleteButton.style.marginLeft = "10px";
-            deleteButton.onclick = () => removeGuitar(guitar.id);
+        if (guitars.length > 0) {
+            guitars.forEach(guitar => {
+                const listItem = document.createElement("li");
+                listItem.textContent = guitar.model;
 
-            listItem.appendChild(deleteButton);
-            guitarList.appendChild(listItem);
-        });
-    } else {
-        console.log("no guitars in your collection :(");
+                const deleteButton = document.createElement("button");
+                deleteButton.textContent = "del";
+                deleteButton.style.marginLeft = "10px";
+                deleteButton.onclick = () => removeGuitar(guitar.id); 
+
+                listItem.appendChild(deleteButton);
+                guitarList.appendChild(listItem);
+            });
+        } else {
+            console.log("no guitars in your collection :(");
+        }
+    } catch (error) {
+        console.error("Error loading guitars:", error);
     }
 }
-
 
 async function addGuitar() {
     const guitarInput = document.getElementById("guitarInput");
@@ -82,12 +85,12 @@ async function addGuitar() {
         return;
     }
 
-    const tx = database.transaction('guitarCollection', 'readwrite');
-    const store = tx.objectStore('guitarCollection');
-    try {
-        await store.add({ model });
-        await tx.done;
-        console.log('cooool guitar added successfully!!');
+    try { 
+        const tx = database.transaction('guitarCollection', 'readwrite');
+        const store = tx.objectStore('guitarCollection');
+        const id = await store.add({ model }); 
+        await tx.done; 
+        console.log('cooool guitar added successfully!! ID:', id);
         guitarInput.value = "";
         loadGuitars();
     } catch (error) {
@@ -101,12 +104,13 @@ async function removeGuitar(id) {
         return;
     }
 
-    const tx = database.transaction('guitarCollection', 'readwrite');
-    const store = tx.objectStore('guitarCollection');
-    try {
+    try { 
+        const tx = database.transaction('guitarCollection', 'readwrite');
+        const store = tx.objectStore('guitarCollection');
         await store.delete(id);
+        await tx.done; 
         console.log('your guitar removed successfully. why');
-        loadGuitars();  
+        loadGuitars();
     } catch (error) {
         console.error('error removing ur guitar:', error);
     }
